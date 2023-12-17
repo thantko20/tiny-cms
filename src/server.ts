@@ -1,7 +1,13 @@
 import Fastify from "fastify";
+import testRoute from "./testRoute";
+import { dbPlugin } from "./database/db.plugin";
 const fastify = Fastify({
   logger: true
 });
+
+fastify.register(dbPlugin);
+
+fastify.register(testRoute);
 
 fastify.get("/", function (request, reply) {
   reply.send({ hello: "world" });

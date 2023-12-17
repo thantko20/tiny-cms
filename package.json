@@ -8,6 +8,7 @@
 		"better-sqlite3": "^9.2.2",
 		"fastify": "^4.25.1",
 		"fastify-cli": "^5.9.0",
+		"fastify-plugin": "^4.5.1",
 		"knex": "^3.1.0"
 	},
 	"devDependencies": {

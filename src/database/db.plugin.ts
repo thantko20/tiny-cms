@@ -1,8 +1,9 @@
 import { FastifyPluginCallback } from "fastify";
+import fp from "fastify-plugin";
 import { knexPlugin } from "./knex.plugin";
 import path from "path";
 
-export const dbPlugin: FastifyPluginCallback = (fastify, _opts = {}, done) => {
+const plugin: FastifyPluginCallback = (fastify, _opts = {}, done) => {
   const dbPath = path.resolve(__dirname, "..", "..", ".tmp", "data.db");
   fastify.register(knexPlugin, {
     client: "better-sqlite3",
@@ -13,3 +14,5 @@ export const dbPlugin: FastifyPluginCallback = (fastify, _opts = {}, done) => {
   });
   done();
 };
+
+export const dbPlugin = fp(plugin, { name: "db" });

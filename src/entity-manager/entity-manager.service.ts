@@ -1,8 +1,17 @@
 import type { Database } from "../database";
 
+interface Attribute {
+  name: string;
+  type: "string" | "int";
+  constraints: {
+    max: number | null;
+    required: boolean | null;
+  };
+}
+
 export const createNewEntity = async (
   db: Database,
-  data: { name: string; attributes: Record<string, string> }
+  data: { name: string; attributes: Attribute[] }
 ) => {
   const { name, attributes } = data;
   await db.transaction(async (trx) => {
@@ -13,11 +22,14 @@ export const createNewEntity = async (
     await trx.schema.createTable(name, function (table) {
       table.increments();
 
-      Object.entries(attributes).forEach(([attributeName, type]) => {
+      attributes.forEach(({ name, type, constraints }) => {
         if (type === "string") {
-          table.string(attributeName);
+          table.string(name, constraints.max || undefined);
+          if (constraints.required) {
+            table.string(name).notNullable();
+          }
         } else if (type === "int") {
-          table.integer(attributeName);
+          table.integer(name).notNullable();
         }
       });
     });

@@ -64,17 +64,8 @@ fastify.listen({ port: 3000 }, async function (err, address) {
     schema: JSON.parse(table.schema)
   }));
 
-  db.metadata = {
-    set: function (payload) {
-      db.metadata._data = payload;
-    },
-    get: function (uid) {
-      return (this._data as typeof tables).find((table) => table.name === uid)!;
-    },
-    _data: tables
-  };
-
-  console.log(db.metadata._data);
+  db.metadata.set(tables);
+  console.log(db.metadata._tables);
 
   fastify.log.info(`Server is now listening on ${address}`);
 });

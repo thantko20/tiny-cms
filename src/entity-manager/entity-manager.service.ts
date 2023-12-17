@@ -19,21 +19,29 @@ export const createNewEntity = async (
     if (hasTable) {
       throw new Error("Table already exists");
     }
+
+    const schema: {
+      columns: any[];
+    } = {
+      columns: []
+    };
+
     await trx.schema.createTable(name, function (table) {
       table.increments();
 
       attributes.forEach(({ name, type, constraints }) => {
         if (type === "string") {
           table.string(name, constraints.max || undefined);
-          if (constraints.required) {
-            table.string(name).notNullable();
-          }
         } else if (type === "int") {
           table.integer(name).notNullable();
         }
+        schema.columns.push({
+          name,
+          type
+        });
       });
     });
-    await trx.insert({ name, table_name: name }).into("entities");
+    await trx.insert({ name, table_name: name, schema }).into("entities");
   });
 
   return {

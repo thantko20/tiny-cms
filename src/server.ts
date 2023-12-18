@@ -3,6 +3,8 @@ import testRoute from "./testRoute";
 import { dbPlugin } from "./database/db.plugin";
 import { createNewEntity } from "./entity-manager/entity-manager.service";
 import { createContent } from "./content-manager/content-manager.service";
+import { errorHandler } from "./utils";
+
 const fastify = Fastify({
   logger: true
 });
@@ -33,6 +35,8 @@ fastify.post<{ Body: Object; Params: { entityName: string } }>(
     return createContent(db, entityName, request.body);
   }
 );
+
+fastify.setErrorHandler(errorHandler);
 
 fastify.listen({ port: 3000 }, async function (err, address) {
   if (err) {
@@ -65,7 +69,6 @@ fastify.listen({ port: 3000 }, async function (err, address) {
   }));
 
   db.metadata.set(tables);
-  console.log(db.metadata._tables);
 
   fastify.log.info(`Server is now listening on ${address}`);
 });

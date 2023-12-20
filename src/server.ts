@@ -7,7 +7,11 @@ import apiRoutesPlugin from "./routes";
 import { bootstrapDB } from "./database/bootstrapDB";
 
 const fastify = Fastify({
-  logger: true
+  logger: {
+    transport: {
+      target: "pino-pretty"
+    }
+  }
 });
 
 fastify.register(dbPlugin);

@@ -3,6 +3,7 @@ import testRoute from "./testRoute";
 import { dbPlugin } from "./database/db.plugin";
 import { errorHandler } from "./utils";
 import apiRoutesPlugin from "./routes";
+import { bootstrapDB } from "./database/bootstrapDB";
 
 const fastify = Fastify({
   logger: true
@@ -27,30 +28,7 @@ fastify.listen({ port: 3000 }, async function (err, address) {
   }
 
   const db = fastify.db;
-
-  const hasEntitiesTable = await db.schema.hasTable("entities");
-
-  if (!hasEntitiesTable) {
-    await db.schema.createTable("entities", function (table) {
-      table.increments();
-      table.string("name").notNullable();
-      table.string("table_name").notNullable();
-      table.json("schema").notNullable();
-    });
-  }
-
-  let tables = await db
-    .select<
-      { id: number; name: string; table_name: string; schema: string }[]
-    >()
-    .from("entities");
-
-  tables = tables.map((table) => ({
-    ...table,
-    schema: JSON.parse(table.schema)
-  }));
-
-  db.metadata.set(tables);
+  bootstrapDB(db);
 
   fastify.log.info(`Server is now listening on ${address}`);
 });

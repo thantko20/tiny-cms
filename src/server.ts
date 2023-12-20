@@ -1,9 +1,8 @@
 import Fastify from "fastify";
 import testRoute from "./testRoute";
 import { dbPlugin } from "./database/db.plugin";
-import { createNewEntity } from "./entity-manager/entity-manager.service";
-import { createContent } from "./content-manager/content-manager.service";
 import { errorHandler } from "./utils";
+import apiRoutesPlugin from "./routes";
 
 const fastify = Fastify({
   logger: true
@@ -17,24 +16,7 @@ fastify.get("/", function (request, reply) {
   reply.send({ hello: "world" });
 });
 
-fastify.post<{ Body: { name: string; attributes: any } }>(
-  "/api/entity-manager",
-  async function (request, reply) {
-    const db = fastify.db;
-    const { name, attributes } = request.body;
-
-    return createNewEntity(db, { name, attributes });
-  }
-);
-
-fastify.post<{ Body: Object; Params: { entityName: string } }>(
-  "/api/content-manager/:entityName",
-  async (request, reply) => {
-    const db = fastify.db;
-    const { entityName } = request.params;
-    return createContent(db, entityName, request.body);
-  }
-);
+fastify.register(apiRoutesPlugin, { prefix: "/api" });
 
 fastify.setErrorHandler(errorHandler);
 

@@ -1,13 +1,5 @@
-import type { Database } from "../database";
-
-interface Attribute {
-  name: string;
-  type: "string" | "int";
-  constraints: {
-    max: number | null;
-    required: boolean | null;
-  };
-}
+import type { Attribute, Database } from "../database";
+import { AppError } from "../utils";
 
 export const createNewEntity = async (
   db: Database,
@@ -17,7 +9,7 @@ export const createNewEntity = async (
   await db.transaction(async (trx) => {
     const hasTable = await trx.schema.hasTable(name);
     if (hasTable) {
-      throw new Error("Table already exists");
+      throw new AppError("Entity already exists", 400);
     }
 
     const schema: {
@@ -31,9 +23,9 @@ export const createNewEntity = async (
 
       attributes.forEach(({ name, type, constraints }) => {
         if (type === "string") {
-          table.string(name, constraints.max || undefined);
+          table.string(name, constraints.max || undefined).nullable();
         } else if (type === "int") {
-          table.integer(name).notNullable();
+          table.integer(name).nullable();
         }
         schema.columns.push({
           name,
@@ -42,6 +34,7 @@ export const createNewEntity = async (
       });
     });
     await trx.insert({ name, table_name: name, schema }).into("entities");
+    return;
   });
 
   return {

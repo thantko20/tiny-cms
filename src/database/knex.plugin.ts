@@ -21,6 +21,7 @@ const plugin: FastifyPluginCallback<knex.Knex.Config> = async (
     };
 
     fastify.decorate("db", db);
+    fastify.decorateRequest("db", db);
     fastify.addHook("onClose", (fastify, done) => {
       if (fastify.db === db) {
         fastify.db.destroy(done);

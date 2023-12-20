@@ -2,7 +2,9 @@
 	"name": "tiny-cms",
 	"scripts": {
 		"start": "fastify start src/server.ts",
-		"dev": "tsx --watch src/server.ts"
+		"dev:server": "tsx --watch src/server.ts",
+		"dev:frontend": "pnpm --prefix ./src/client/ dev",
+		"dev": "concurrently \"pnpm dev:server\" \"pnpm dev:frontend\""
 	},
 	"dependencies": {
 		"better-sqlite3": "^9.2.2",
@@ -13,6 +15,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^20.10.4",
+		"concurrently": "^8.2.2",
 		"tsx": "^4.6.2",
 		"typescript": "^5.3.3"
 	}

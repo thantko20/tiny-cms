@@ -21,6 +21,7 @@ export type AttributeContraint = {
   min: number;
   required: boolean;
   defaultValue: any;
+  unique: boolean;
 };
 
 export type Attribute = {

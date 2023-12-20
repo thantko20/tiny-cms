@@ -1,5 +1,6 @@
 import Fastify from "fastify";
-import testRoute from "./testRoute";
+import path from "path";
+import fastifyStatic from "@fastify/static";
 import { dbPlugin } from "./database/db.plugin";
 import { errorHandler } from "./utils";
 import apiRoutesPlugin from "./routes";
@@ -11,13 +12,17 @@ const fastify = Fastify({
 
 fastify.register(dbPlugin);
 
-fastify.register(testRoute);
-
-fastify.get("/", function (request, reply) {
-  reply.send({ hello: "world" });
-});
-
 fastify.register(apiRoutesPlugin, { prefix: "/api" });
+
+// server the spa
+fastify
+  .register(fastifyStatic, {
+    root: path.join(__dirname, "client/build"),
+    wildcard: false
+  })
+  .get("/*", function (_request, reply) {
+    reply.sendFile("index.html");
+  });
 
 fastify.setErrorHandler(errorHandler);
 

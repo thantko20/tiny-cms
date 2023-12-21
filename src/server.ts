@@ -5,6 +5,7 @@ import { dbPlugin } from "./database/db.plugin";
 import { errorHandler } from "./utils";
 import apiRoutesPlugin from "./routes";
 import { bootstrapDB } from "./database/bootstrapDB";
+import cors from "@fastify/cors";
 
 const fastify = Fastify({
   logger: {
@@ -13,6 +14,8 @@ const fastify = Fastify({
     }
   }
 });
+
+fastify.register(cors);
 
 fastify.register(dbPlugin);
 

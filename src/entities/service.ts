@@ -41,3 +41,8 @@ export const createNewEntity = async (
     data: `table \`${name}\` created`
   };
 };
+
+export const getEntitiesSchema = async (db: Database) => {
+  const result = await db.select().from("entities");
+  return result.map((e) => ({ ...e, schema: JSON.parse(e.schema) }));
+};

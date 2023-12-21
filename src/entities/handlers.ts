@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { createNewEntity } from "./service";
+import { createNewEntity, getEntitiesSchema } from "./service";
 import { Attribute } from "../database";
 
 export const createEntityHandler = async (
@@ -11,4 +11,11 @@ export const createEntityHandler = async (
 
   await createNewEntity(db, { name, attributes });
   reply.status(201).send({ message: "Success!" });
+};
+
+export const getEntitiesSchemaHandler = async (
+  request: FastifyRequest,
+  _reply: FastifyReply
+) => {
+  return await getEntitiesSchema(request.db);
 };

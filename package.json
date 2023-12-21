@@ -8,6 +8,7 @@
 		"build:frontend": "pnpm --prefix ./src/client/ build"
 	},
 	"dependencies": {
+		"@fastify/cors": "^8.5.0",
 		"@fastify/static": "^6.12.0",
 		"better-sqlite3": "^9.2.2",
 		"fastify": "^4.25.1",

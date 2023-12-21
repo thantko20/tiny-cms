@@ -22,6 +22,7 @@ export const createNewEntity = async (
     // create the table for given entity name
     await trx.schema.createTable(name, function (table) {
       table.increments();
+      table.timestamps();
 
       attributes.forEach(({ name, type }) => {
         table[type](name).nullable();
@@ -42,7 +43,6 @@ export const createNewEntity = async (
         if (unique) {
           table[type](name).unique().alter();
         }
-
         schema.columns.push({
           name,
           type,

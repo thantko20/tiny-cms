@@ -8,7 +8,9 @@ const plugin: FastifyPluginCallback<knex.Knex.Config> = async (
   options
 ) => {
   if (!fastify.db) {
-    const db = knex(options) as Database;
+    const db = knex({
+      ...options
+    }) as Database;
 
     db.metadata = {
       get(uid: string) {

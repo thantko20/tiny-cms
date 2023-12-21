@@ -1,32 +1,21 @@
 <script lang="ts">
-	let isLoading = false;
-	let data: {
-		name: string;
-		table_name: string;
-		schema: object;
-	}[] = [];
+	import { createQuery } from '@tanstack/svelte-query';
+	const query = createQuery({
+		queryKey: ['entities'],
+		queryFn: getEntities
+	});
 
 	async function getEntities() {
-		isLoading = true;
-		try {
-			await new Promise((res) => setTimeout(res, 2000));
-			data = await fetch('http://localhost:3000/api/entities').then((res) => res.json());
-			console.log(data);
-		} catch (error) {
-			console.error(error);
-		} finally {
-			isLoading = false;
-		}
-		return data;
+		await new Promise((res) => setTimeout(res, 2000));
+		return fetch('http://localhost:3000/api/entities').then((res) => res.json());
 	}
-	let promise = getEntities();
 </script>
 
-{#await promise}
+{#if $query.isLoading}
 	<p>loading...</p>
-{:then data}
-	{#each data as entity}
+{:else if $query.data}
+	{#each $query.data as entity}
 		<h2>{entity.name}</h2>
 		<pre>{JSON.stringify(entity.schema, null, 2)}</pre>
 	{/each}
-{/await}
+{/if}

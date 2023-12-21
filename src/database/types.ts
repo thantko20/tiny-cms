@@ -14,11 +14,11 @@ export type Database = Knex & {
   };
 };
 
-export type AttributeType = "string" | "int";
+export type AttributeType = "string" | "integer";
 
-export type AttributeContraint = {
-  max: number;
-  min: number;
+export type AttributeConstraint = {
+  maxLength: number;
+  minLength: number;
   required: boolean;
   defaultValue: any;
   unique: boolean;
@@ -27,5 +27,5 @@ export type AttributeContraint = {
 export type Attribute = {
   name: string;
   type: AttributeType;
-  constraints: Partial<AttributeContraint>;
+  constraints: Partial<AttributeConstraint>;
 };

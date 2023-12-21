@@ -6,6 +6,7 @@ export const errorHandler = (
   _request: FastifyRequest,
   reply: FastifyReply
 ) => {
+  console.log(error);
   if (error instanceof AppError) {
     return reply.status(error.statusCode).send(error.toObject());
   }

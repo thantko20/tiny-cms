@@ -1,5 +1,6 @@
 import type { Attribute, Database } from "../database";
 import { AppError } from "../utils";
+import { createConstraints } from "./utils";
 
 export const createNewEntity = async (
   db: Database,
@@ -18,21 +19,38 @@ export const createNewEntity = async (
       columns: []
     };
 
+    // create the table for given entity name
     await trx.schema.createTable(name, function (table) {
       table.increments();
 
+      attributes.forEach(({ name, type }) => {
+        table[type](name).nullable();
+      });
+    });
+
+    // alter the table to set the constraints
+    await trx.schema.alterTable(name, function (table) {
       attributes.forEach(({ name, type, constraints }) => {
-        if (type === "string") {
-          table.string(name, constraints.max || undefined).nullable();
-        } else if (type === "int") {
-          table.integer(name).nullable();
+        const theConstraints = createConstraints(constraints);
+        const { defaultValue, required, unique } = theConstraints;
+
+        table[type](name).defaultTo(defaultValue).alter();
+        if (required) {
+          table[type](name).notNullable().alter();
         }
+
+        if (unique) {
+          table[type](name).unique().alter();
+        }
+
         schema.columns.push({
           name,
-          type
+          type,
+          constraints: theConstraints
         });
       });
     });
+
     await trx.insert({ name, table_name: name, schema }).into("entities");
     return;
   });

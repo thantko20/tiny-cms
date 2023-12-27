@@ -1,17 +1,6 @@
 import { api } from '$lib';
-import { createQuery } from '@tanstack/svelte-query';
+import type { EntitySchema } from '$lib/types';
 
 export const getEntities = async () => {
-	return api.get('/entities').json<
-		{
-			name: string;
-			table_name: string;
-			schema: object;
-		}[]
-	>();
+	return api.get<EntitySchema[]>('/entities').then((res) => res.data);
 };
-
-export const entitiesQuery = createQuery({
-	queryKey: ['entities'],
-	queryFn: getEntities
-});

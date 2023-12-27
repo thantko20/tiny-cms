@@ -1,3 +1,5 @@
-import wretch from 'wretch';
+import axios from 'axios';
 
-export const api = wretch('http://localhost:3000/api').resolve((r) => r.json());
+export const api = axios.create({
+	baseURL: 'http://localhost:3000/api'
+});

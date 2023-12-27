@@ -36,6 +36,7 @@
 	"type": "module",
 	"dependencies": {
 		"@tanstack/svelte-query": "^5.14.2",
+		"axios": "^1.6.3",
 		"clsx": "^2.0.0",
 		"lucide-svelte": "^0.302.0",
 		"mode-watcher": "^0.1.2",

@@ -8,6 +8,8 @@
 	} from '$lib/contexts/entitiesMetadata.ctx';
 	import { onMount } from 'svelte';
 	import { getEntities } from '$lib/entities';
+	import { Button } from '$lib/components/ui/button';
+	import Sidebar from '$lib/components/Sidebar.svelte';
 
 	let data: EntitySchema[] | null = null;
 	let isLoadingMetadata = true;
@@ -29,13 +31,7 @@
 		<p>loading metadata</p>
 	{:else if data}
 		<div class="h-screen flex">
-			<div class="w-[250px] border-r border-r-gray-800 p-2">
-				{#each data as schema}
-					<button class="hover:bg-neutral-800 w-full text-left py-1 px-2 rounded-sm"
-						>{schema.name}</button
-					>
-				{/each}
-			</div>
+			<Sidebar schemas={data} />
 			<main>
 				<slot />
 			</main>

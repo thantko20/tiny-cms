@@ -1,0 +1,25 @@
+{
+  // "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // "composite": true,
+    // "declaration": true,
+    // "declarationMap": true,
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "module": "CommonJS",
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ES2016",
+    "noEmit": false,
+  },
+  "include": ["./src/**/*.ts"],
+  "exclude": ["./src/react-client"]
+}

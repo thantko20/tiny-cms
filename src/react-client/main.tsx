@@ -9,12 +9,14 @@ import {
   RouterProvider,
   Router
 } from "@tanstack/react-router";
+import { Button } from "./components/ui/button";
 
 const rootRoute = new RootRoute({
   component: function () {
     return (
       <>
         <h1>this is root route</h1>
+        <Button>More</Button>
         <Outlet />
       </>
     );

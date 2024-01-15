@@ -3,35 +3,47 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 
 import {
-  Outlet,
   RootRoute,
   Route,
   RouterProvider,
-  Router
+  Router,
+  Outlet
 } from "@tanstack/react-router";
-import { Button } from "./components/ui/button";
+import { ThemeProvider } from "./components/theme-provider";
 
-const rootRoute = new RootRoute({
-  component: function () {
-    return (
-      <>
-        <h1>this is root route</h1>
-        <Button>More</Button>
-        <Outlet />
-      </>
-    );
-  }
-});
+const rootRoute = new RootRoute();
 
-const childRoute = new Route({
+const mainLayout = new Route({
   getParentRoute: () => rootRoute,
-  path: "/child",
-  component: function () {
-    return <h2>child route -&gt; changes fdafda woops</h2>;
-  }
+  component: () => {
+    return (
+      <div>
+        <Outlet />
+      </div>
+    );
+  },
+  id: "mainLayout"
 });
 
-const routeTree = rootRoute.addChildren([childRoute]);
+const mainIndex = new Route({
+  getParentRoute: () => mainLayout,
+  component: () => {
+    return <div>main index</div>;
+  },
+  path: "/"
+});
+
+const collectionsRoute = new Route({
+  getParentRoute: () => mainLayout,
+  component: () => {
+    return <div>Collections route</div>;
+  },
+  path: "/collections"
+});
+
+const routeTree = rootRoute.addChildren([
+  mainLayout.addChildren([mainIndex, collectionsRoute])
+]);
 
 const router = new Router({ routeTree });
 
@@ -46,7 +58,9 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <React.StrictMode>
-      <RouterProvider router={router} />
+      <ThemeProvider defaultTheme="dark">
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </React.StrictMode>
   );
 }

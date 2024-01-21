@@ -1,8 +1,10 @@
 import { Boxes, Image as ImageIcon, KeySquare } from "lucide-react";
 import { Nav, NavLink } from "./nav";
-import { Outlet } from "@tanstack/react-router";
+import { Outlet, useMatchRoute } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Separator } from "./ui/separator";
+import { cn } from "../lib/utils/cn";
+import { CollectionsNav } from "./collections-nav";
 
 const links: NavLink[] = [
   {
@@ -22,10 +24,24 @@ const links: NavLink[] = [
   }
 ];
 
+const collections = [
+  {
+    title: "Blogs",
+    to: "/collections/blogs"
+  },
+  {
+    title: "Authors",
+    to: "/collections/authors"
+  }
+];
+
 export const MainLayout = () => {
+  const matchRoute = useMatchRoute();
+  const isCollectionsRoute = matchRoute({ to: "/" });
+
   return (
-    <div className="h-screen grid grid-cols-[250px_1fr]">
-      <div className="border-r border-solid border-gray-300 dark:border-gray-600">
+    <div className="h-screen grid grid-cols-[250px_250px_1fr]">
+      <div className="border-r border-solid border-gray-300 dark:border-gray-700">
         <div className="px-4 py-2">
           <div className="flex items-center gap-2 px-4 py-1">
             <Avatar className="w-8 h-8">
@@ -40,7 +56,14 @@ export const MainLayout = () => {
           <Nav links={links} />
         </div>
       </div>
-      <main className="p-4">
+      {isCollectionsRoute ? (
+        <div className="border-r border-solid border-gray-300 dark:border-gray-700">
+          <CollectionsNav links={collections} />
+        </div>
+      ) : null}
+      <main
+        className={cn("p-4 col-span-2", isCollectionsRoute && "col-span-1")}
+      >
         <Outlet />
       </main>
     </div>

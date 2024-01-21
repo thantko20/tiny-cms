@@ -19,7 +19,7 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <React.StrictMode>
-      <ThemeProvider defaultTheme="light">
+      <ThemeProvider defaultTheme="dark">
         <RouterProvider router={router} />
       </ThemeProvider>
     </React.StrictMode>

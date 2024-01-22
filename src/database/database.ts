@@ -1,8 +1,15 @@
 import { CollectionsManager } from "./create-collection-manager";
 
+export interface Metadata {
+  collections: any[];
+}
+
 export abstract class Database<DB = any> {
   collectionsManager: CollectionsManager<DB>;
   connectionString: string;
+  metadata: Metadata = {
+    collections: []
+  };
 
   constructor(
     collectionsManager: CollectionsManager<DB>,
@@ -13,5 +20,6 @@ export abstract class Database<DB = any> {
     this.connectionString = connectionString;
   }
 
-  abstract setMetadata(data: any): Promise<void>;
+  abstract queryMetadata(data: any): Promise<Metadata>;
+  abstract boostrapDB(): Promise<void>;
 }

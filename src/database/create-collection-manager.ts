@@ -1,5 +1,5 @@
 export abstract class CollectionsManager<DB> {
-  constructor(readonly db: DB, readonly info: any) {}
+  constructor(readonly db: DB) {}
 
   abstract getRepository(_name: string): CollectionRepository<DB>;
 

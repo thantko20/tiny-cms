@@ -3,7 +3,6 @@ import {
   CollectionRepository,
   CollectionsManager
 } from "./create-collection-manager";
-import { createDatabase } from "./create-database";
 import { Database } from "./database";
 import { logger } from "../utils/logger";
 
@@ -48,9 +47,41 @@ class PostgresCollectionsManager extends CollectionsManager<Knex> {
 }
 
 class PgDatabase extends Database<Knex> {
-  // async setMetadata(data: any): Promise<void> {
-  //   this.connection.
-  // }
+  async queryMetadata() {
+    return {
+      collections: await this.connection.select("*").from("_collections")
+    };
+  }
+
+  async boostrapDB(): Promise<void> {
+    const tables = [
+      {
+        name: "_collections",
+        cb(table: Knex.CreateTableBuilder) {
+          table.increments("id");
+
+          table.string("displayName", 255);
+          table.string("apiName", 255);
+          table.string("apiNamePlural", 255);
+          table.jsonb("attributes").defaultTo("[]");
+        }
+      }
+    ];
+
+    await this.connection.transaction(async function (trx) {
+      for (const t of tables) {
+        const hasTable = await trx.schema.hasTable(t.name);
+        if (!hasTable) {
+          await trx.schema.createTable(t.name, t.cb);
+        }
+      }
+    });
+  }
+
+  async init() {
+    await this.boostrapDB();
+    this.metadata = await this.queryMetadata();
+  }
 }
 
 export const createPgDatabase = async (): Promise<Database<Knex>> => {
@@ -65,38 +96,8 @@ export const createPgDatabase = async (): Promise<Database<Knex>> => {
     }
   });
 
+  const pgDb = new PgDatabase(new PostgresCollectionsManager(db), "", db);
   logger.info("Bootstrapping db", { context: "APP" });
-
-  await bootstrapDB(db);
-
-  const info = await db.select().from("_collections");
-
-  return createDatabase({
-    collectionsManager: new PostgresCollectionsManager(db, info)
-  });
+  await pgDb.init();
+  return pgDb;
 };
-
-async function bootstrapDB(db: Knex) {
-  const tables = [
-    {
-      name: "_collections",
-      cb(table: Knex.CreateTableBuilder) {
-        table.increments("id");
-
-        table.string("displayName", 255);
-        table.string("apiName", 255);
-        table.string("apiNamePlural", 255);
-        table.jsonb("attributes").defaultTo("[]");
-      }
-    }
-  ];
-
-  await db.transaction(async function (trx) {
-    for (const t of tables) {
-      const hasTable = await trx.schema.hasTable(t.name);
-      if (!hasTable) {
-        await trx.schema.createTable(t.name, t.cb);
-      }
-    }
-  });
-}

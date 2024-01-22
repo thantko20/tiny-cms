@@ -25,6 +25,7 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import pluralize from "pluralize";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 const AddCollectionDialog = ({ className }: { className?: string }) => {
   const form = useForm<AddCollectionDto>({
@@ -51,41 +52,51 @@ const AddCollectionDialog = ({ className }: { className?: string }) => {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="displayName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Display Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Blogs" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="grid grid-cols-2 gap-x-4">
-              <FormItem>
-                <FormLabel>API Name</FormLabel>
-                <FormControl>
-                  <Input
-                    value={form.watch("displayName")?.toLowerCase() || ""}
-                    readOnly
-                  />
-                </FormControl>
-              </FormItem>
-              <FormItem>
-                <FormLabel>API Name (Plural)</FormLabel>
-                <FormControl>
-                  <Input
-                    value={
-                      pluralize(form.watch("displayName").toLowerCase()) || ""
-                    }
-                    readOnly
-                  />
-                </FormControl>
-              </FormItem>
-            </div>
+            <Tabs defaultValue="main">
+              <TabsList className="w-full grid grid-cols-2">
+                <TabsTrigger value="main">Main</TabsTrigger>
+                <TabsTrigger value="fields">Fields</TabsTrigger>
+              </TabsList>
+              <TabsContent value="main">
+                <FormField
+                  control={form.control}
+                  name="displayName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Display Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Blogs" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-2 gap-x-4">
+                  <FormItem>
+                    <FormLabel>API Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        value={form.watch("displayName")?.toLowerCase() || ""}
+                        readOnly
+                      />
+                    </FormControl>
+                  </FormItem>
+                  <FormItem>
+                    <FormLabel>API Name (Plural)</FormLabel>
+                    <FormControl>
+                      <Input
+                        value={
+                          pluralize(form.watch("displayName").toLowerCase()) ||
+                          ""
+                        }
+                        readOnly
+                      />
+                    </FormControl>
+                  </FormItem>
+                </div>
+              </TabsContent>
+              <TabsContent value="fields">hello</TabsContent>
+            </Tabs>
             <Button type="submit" className="w-full">
               Create
             </Button>

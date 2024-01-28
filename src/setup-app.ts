@@ -1,22 +1,19 @@
 import express, { type Express } from "express";
+import { Container } from "typedi";
 import path from "node:path";
-import { logger } from "./utils/logger";
-import { createPgDatabase } from "./database/create-pg-database";
+import { addCollectionSchema } from "./validations/collections";
+import { validate } from "./middlewares/validator.middleware";
+import { loadContainer } from "./load-container";
+import { httpMiddlewareToken } from "./middlewares/http-logger.middleware";
+import { createCollectionHandler } from "./modules/collections/collections-controller";
+import { spaHandler } from "./spa-handler";
 
 export const setupApp = async (app: Express) => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  const db = await createPgDatabase();
-  app.set("db", db);
-  app.use(function (req, res, next) {
-    const start = Date.now();
-    res.on("finish", function () {
-      const end = Date.now();
-      const ms = end - start;
-      logger.info(`${req.method} ${req.path} - ${ms}ms`);
-    });
-    next();
-  });
+  loadContainer();
+
+  app.use(Container.get(httpMiddlewareToken));
 
   app.use("/public", express.static(path.join(__dirname, "public")));
   app.use(express.static(path.join(__dirname, "react-client")));
@@ -25,18 +22,11 @@ export const setupApp = async (app: Express) => {
     res.send("Hello from tiny-cms api");
   });
 
-  app.post("/api/collections", async function (req, res) {
-    const { name } = req.body;
-    await db.collectionsManager.create({ displayName: name });
-    res.json({ message: "success!" });
-  });
+  app.post(
+    "/api/collections",
+    validate({ body: addCollectionSchema }),
+    createCollectionHandler
+  );
 
-  app.get("*", async (_req, res, next) => {
-    try {
-      const filePath = path.join(__dirname, "react-client", "index.html");
-      return res.sendFile(filePath);
-    } catch (error) {
-      next(error);
-    }
-  });
+  app.get("*", spaHandler);
 };

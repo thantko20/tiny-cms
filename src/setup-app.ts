@@ -5,7 +5,7 @@ import { addCollectionSchema } from "./validations/collections";
 import { validate } from "./middlewares/validator.middleware";
 import { loadContainer } from "./load-container";
 import { httpMiddlewareToken } from "./middlewares/http-logger.middleware";
-import { createCollectionHandler } from "./modules/collections/collections-controller";
+import { createCollectionHandler } from "./modules/collections/collections.controller";
 import { spaHandler } from "./spa-handler";
 
 export const setupApp = async (app: Express) => {

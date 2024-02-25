@@ -1,10 +1,8 @@
 import knex, { Knex } from "knex";
 import { Token } from "typedi";
+import knexConfig from "./knex-config";
 
-export const db = knex({
-  client: "pg",
-  connection: "postgres://postgres:password@localhost:5432/tinycms"
-});
+export const db = knex(knexConfig);
 
 export type KnexDb = Knex;
 

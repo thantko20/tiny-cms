@@ -31,7 +31,7 @@ export class CollectionsService {
         });
       }
 
-      return trx.insert(data).into("_collections").returning("*");
+      return trx.insert(data).into("tcms_collections").returning("*");
     });
   }
 }

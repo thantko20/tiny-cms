@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 ./react-client/dist
+
+data/*.db

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const attributeSchema = z.object({
+export const fieldInfoSchema = z.object({
   type: z.enum(["string", "integer"]),
   name: z.string(),
   constraints: z.object({
@@ -11,13 +11,13 @@ export const attributeSchema = z.object({
 });
 
 export const addCollectionSchema = z.object({
-  displayName: z
+  name: z
     .string()
     .min(1, "Display name is required")
     .max(255)
     .trim()
     .regex(/^[^a-zA-z]+$/, "You can only have letters"),
-  attributes: z.array(attributeSchema).optional()
+  fields: z.array(fieldInfoSchema).optional()
 });
 
 export type AddCollectionDto = z.infer<typeof addCollectionSchema>;

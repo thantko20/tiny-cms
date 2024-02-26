@@ -1,6 +1,6 @@
 import { BaseModel } from "./base-model.interface";
 
-export interface TcmsCollections extends BaseModel {
+export interface TcmsCollection extends BaseModel {
   tableName: string;
   apiName: string;
   fields: object;

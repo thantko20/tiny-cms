@@ -1,15 +1,13 @@
 import { Knex } from "knex";
-import camelCase from "camelcase";
+import path from "path";
 
 export default {
   client: "better-sqlite3",
   connection: {
-    filename: "/data/db.sqlite3"
+    filename: path.join(process.cwd(), "data", "db.sqlite3")
   },
   migrations: {
     directory: "./src/database/migrations"
   },
-  wrapIdentifier(value, origImpl, _queryContext) {
-    return origImpl(camelCase(value));
-  }
+  useNullAsDefault: true
 } satisfies Knex.Config;
